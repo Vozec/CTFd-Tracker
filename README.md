@@ -14,7 +14,7 @@ The tool can therefore be used **even if you are not an admin**
 
 *(As all is based on external analysis, it is difficult to push the analysis further)*
 
-#### Team boosting
+### Team boosting
 The tool creates a closeness score between each team and returns a sorted list of highest scores.
 For each flag of a team, its score with the previous X teams is incremented with a value based on:
 - Number of ``challenge points``
@@ -28,11 +28,11 @@ $$ \frac{Points/10}{\Delta_t} * (1- \frac{N_{Flags}}{N_{Users}} ) $$
 
 *(X is by default equal to 5 but it is changeable via the "-m" parameter)*
 
-#### Team accounts
+### Team accounts
 Detection is based on **team names** and **usernames**.  
 I am generating a lot of variation of team usernames and looking if any are included in the team name.
 
-#### Team doing flag hoarding
+### Team doing flag hoarding
 
 Detection is based on **flag times**.  
 The tool averages all solve times and checks if this average is included in the last 8th of the competition time
