@@ -1,7 +1,7 @@
 # CTFd-Tracker
 This tool is used to detect cheater on ctf ctfd-based by creating score between differents teams.
 
-![Alt text](./img/example.png)
+![Alt text](./github/example.png)
 
 This is the implementation of some anti-cheat techniques explained [here](https://vozec.fr/articles/anti-cheat-ctf/)  
 All the techniques used here are **based on scrapping**.  
@@ -22,7 +22,7 @@ For each flag of a team, its score with the previous X teams is incremented with
 - ``Percentage of flag`` on the whole competition
 
 The formula is currently:  
-$$ \frac{Points/10}{\Delta_t} * (1- \frac{N_{Flags}}{N_{Users}} ) $$
+$$\frac{Points/10}{\Delta_t} * (1- \frac{N_{Flags}}{N_{Users}} )$$
 
 *(This formula is in Beta version, do not hesitate to propose other things to improve it, whether at the level of the calculation or at the level of the parameters)*  
 
