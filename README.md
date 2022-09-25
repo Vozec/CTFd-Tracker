@@ -40,7 +40,7 @@ The tool averages all solve times and checks if this average is included in the 
 ## Installation
 ```bash
 cd ~
-git clonehttps://github.com/Vozec/CTFd-Tracker.git
+git clone https://github.com/Vozec/CTFd-Tracker.git
 cd CTFd-Tracker
 python3 -m pip install -r requirements.txt
 ```
