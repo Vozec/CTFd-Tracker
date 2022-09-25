@@ -22,15 +22,22 @@ def Scrape_teams(session,url):
 			total 		= res['meta']['pagination']['total']
 			with progress.Progress() as p:
 				progress_bar = p.add_task("", total=int(total))
-				for i in range(1,total_pages+1):
-					res = json.loads(session.get('%s/api/v1/teams?page=%s'%(url,i)).text)
-					for team in res['data']:
-						rep = json.loads(session.get('%s/api/v1/teams/%s'%(url,team['id'])).text)
-						if(1 not in rep['data']['members']):
-							all_teams[team['name']] = rep['data']
-						p.update(progress_bar, advance=1)
+				i = 1
+				while (i != total_pages+1):
+					try:
+						res = json.loads(session.get('%s/api/v1/teams?page=%s'%(url,i)).text)
+						for team in res['data']:
+							rep = json.loads(session.get('%s/api/v1/teams/%s'%(url,team['id'])).text)
+							if(1 not in rep['data']['members']):
+								all_teams[team['name']] = rep['data']
+							p.update(progress_bar, advance=1)
+						i += 1
+					except:
+						logger('Error: Failed to fetch "/api/v1/teams?page=%s"'%i,'error',1,0)
+						pass
+					
 	except Exception as ex:
-		logger('Error: %s'%ex,'error',1,0)
+		logger('Error: Failed to fetch "/api/v1/teams" !','error',1,0)
 	logger('%s teams scraped'%len(all_teams),'progress',0,1)
 	return all_teams
 
@@ -44,13 +51,19 @@ def Scrape_users(session,url):
 		total 		= res['meta']['pagination']['total']
 		with progress.Progress() as p:
 			progress_bar = p.add_task("", total=int(total))
-			for i in range(1,total_pages+1):
-				res = json.loads(session.get('%s/api/v1/users?page=%s'%(url,i)).text)
-				for user in res['data']:
-					all_users[user['name']] = user
-					p.update(progress_bar, advance=1)
+			i = 1
+			while (i != total_pages+1):
+				try:
+					res = json.loads(session.get('%s/api/v1/users?page=%s'%(url,i)).text)
+					for user in res['data']:
+						all_users[user['name']] = user
+						p.update(progress_bar, advance=1)
+					i += 1
+				except:
+					logger('Error: Failed to fetch "/api/v1/users?page=%s"'%i,'error',1,0)
+					pass
 	except Exception as ex:
-		logger('Error: %s'%ex,'error',1,0)
+		logger('Error: Failed to fetch "/api/v1/users" !','error',1,0)
 	logger('%s users scraped'%len(all_users),'progress',0,1)
 	return all_users
 
@@ -61,16 +74,21 @@ def Scrape_Submissions(session,url,teams):
 	with progress.Progress() as p:
 		progress_bar = p.add_task("", total=len(teams))
 		for team in teams.values():
-			res = json.loads(session.get('%s/api/v1/teams/%s/solves'%(url,team['id'])).text)
-			if('success' in res and res['success']):
-				for solve in res['data']:
-					challenges[solve['challenge']['id']] = solve['challenge']
-					solves.append({
-						'team':solve['team'],
-						'date':Convert2Timestamp(solve['date']),
-						'challenge_id':solve['challenge']['id'],
-						'solved_by':solve['user']
-					})
+			result = session.get('%s/api/v1/teams/%s/solves'%(url,team['id'])).text
+			try:
+				res = json.loads(result)
+				if('success' in res and res['success']):
+					for solve in res['data']:
+						challenges[solve['challenge']['id']] = solve['challenge']
+						solves.append({
+							'team':solve['team'],
+							'date':Convert2Timestamp(solve['date']),
+							'challenge_id':solve['challenge']['id'],
+							'solved_by':solve['user']
+						})
+			except Exception as ex:
+				logger('Error: %s'%ex,'error',1,0)
+				print(result)
 			p.update(progress_bar, advance=1)
 	logger('%s submissions scraped for %s challenges'%(len(solves),len(challenges)),'progress',0,1)
 	return solves,challenges
