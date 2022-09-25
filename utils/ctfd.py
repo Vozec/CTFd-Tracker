@@ -125,12 +125,12 @@ def Login_Account(session,user,url):
 def Login_Account_Session(session,token,url):
 	session.headers.update({
 		"Content-Type": "application/json",
-		"Authorization": "Token %s"%config['CTFD_TOKEN']
+		"Authorization": "Token %s"%token
 	})
 	resp = json.loads(session.get('%s/api/v1/users/me'%url).text)
 	if 'success' in resp and resp['success']:
-		return False
-	return True
+		return True
+	return False
 
 
 def Auth_CTFd(args,session):    
